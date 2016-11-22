@@ -214,12 +214,15 @@ def orderList(username, password, scene_list, proj, resampling_method, resize, x
             if filename:
                 extent = extent_geo.fromFile(filename)
             json_class.addResizeOption(extent)
-    # Cary on with the request
-    json = json_class.getDict()
+     # Cary on with the request
+    request_dict = json_class.getDict()
     if debug:
-        pprint(json)
+        pprint(request_dict)
     r = requests.post("https://espa.cr.usgs.gov/api/v0/order",\
-        auth=(username, password), verify=True, json=json)
+        auth=(username, password), verify=True, json=request_dict)
+    request_dict["tm5"]['inputs']=list(set(request_dict["tm5"]['inputs']).difference(json.loads(r.text)['message']['Inputs Not Available'])) #Filter the scenes not available
+    r = requests.post("https://espa.cr.usgs.gov/api/v0/order",\
+    auth=(username, password), verify=True, json=request_dict) # Re-do the request
     if r.status_code != 200:
         # raise ValueError('Something went wrong with the request')
         print "Something went wrong with that request"
