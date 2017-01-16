@@ -299,7 +299,7 @@ def isComplete(order_details):
     return order_details['status'] == 'complete'
 
 
-def getSceneList(order_details):
+def getDlSceneList(order_details):
     """Retrieves the list of scenes from the dictionary collecting the details of an order
 
     Args:
